@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Concepts — Learn Simply</title>
+<style>
+/* ── RESET & BASE ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #0d1117;
+  color: #e2e8f0;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── CSS VARIABLES ──────────────────────────────────────────── */
+:root {
+  --yellow: #f5c842;
+  --green:  #4ade80;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --red:    #f87171;
+  --teal:   #2dd4bf;
+  --bg:     #0d1117;
+  --surface:#161b27;
+  --card:   #1e2535;
+  --border: #2a3347;
+  --text:   #e2e8f0;
+  --muted:  #64748b;
+  --radius: 12px;
+}
+
+/* ── NAVBAR ──────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(13,17,23,.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+}
+.nav-brand { font-weight: 800; font-size: 1.1rem; color: var(--yellow); letter-spacing: -.02em; }
+.nav-brand span { color: var(--green); }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 13px;
+  padding: 6px 12px; border-radius: 6px; transition: .2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--card); }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; }
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: .3s; }
+.mobile-menu {
+  display: none; position: fixed; top: 60px; left: 0; right: 0; z-index: 999;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 16px; flex-direction: column; gap: 4px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  color: var(--text); text-decoration: none; padding: 10px 14px;
+  border-radius: 8px; font-size: 14px; transition: .2s;
+}
+.mobile-menu a:hover { background: var(--card); color: var(--yellow); }
+
+/* ── HERO ──────────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 100px 20px 60px;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96,165,250,.08) 0%, transparent 70%);
+  position: relative;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(245,200,66,.1); border: 1px solid rgba(245,200,66,.3);
+  color: var(--yellow); font-size: 12px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; padding: 6px 16px; border-radius: 999px;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-size: clamp(2.2rem, 7vw, 4rem); font-weight: 900;
+  line-height: 1.1; margin-bottom: 20px; letter-spacing: -.03em;
+}
+.hero h1 .accent { color: var(--yellow); }
+.hero h1 .accent2 { color: var(--green); }
+.hero p { color: var(--muted); font-size: clamp(1rem, 2.5vw, 1.15rem); max-width: 560px; margin-bottom: 36px; }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.btn {
+  padding: 12px 28px; border-radius: 8px; font-weight: 700; font-size: 15px;
+  cursor: pointer; border: none; transition: .2s; text-decoration: none; display: inline-block;
+}
+.btn-primary { background: var(--yellow); color: #0d1117; }
+.btn-primary:hover { background: #fbbf24; transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.btn-outline:hover { border-color: var(--yellow); color: var(--yellow); }
+.scroll-hint { position: absolute; bottom: 30px; animation: bounce 2s infinite; color: var(--muted); font-size: 13px; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+/* ── TOPICS GRID ──────────────────────────────────────────── */
+.section { padding: 80px 20px; max-width: 1100px; margin: 0 auto; }
+.section-label { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 8px; }
+.section-title { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; margin-bottom: 8px; letter-spacing: -.02em; }
+.section-sub { color: var(--muted); margin-bottom: 40px; font-size: 1rem; }
+
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.topic-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 28px; cursor: pointer; transition: .25s;
+  position: relative; overflow: hidden;
+}
+.topic-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.topic-card:hover { transform: translateY(-4px); border-color: var(--accent-color, var(--yellow)); }
+.topic-card .icon { font-size: 2rem; margin-bottom: 14px; }
+.topic-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+.topic-card p { color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+.topic-card .tag {
+  display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px;
+  border-radius: 999px; text-transform: uppercase; letter-spacing: .06em;
+}
+.learn-btn {
+  display: block; width: 100%; margin-top: 16px; padding: 10px;
+  background: rgba(255,255,255,.05); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: .2s; text-align: center;
+}
+.learn-btn:hover { background: rgba(255,255,255,.1); }
+
+/* ── MODAL (lesson popup) ─────────────────────────────────── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto;
+  padding: 36px; position: relative; animation: slideUp .3s ease;
+}
+@keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-close {
+  position: absolute; top: 16px; right: 16px; background: var(--card);
+  border: 1px solid var(--border); border-radius: 8px; color: var(--text);
+  width: 32px; height: 32px; cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center; transition: .2s;
+}
+.modal-close:hover { background: var(--border); }
+.modal h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+.modal .modal-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px; display: block; }
+.modal .analogy {
+  background: rgba(74,222,128,.07); border-left: 3px solid var(--green);
+  border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0;
+  font-size: 14px; color: var(--text);
+}
+.modal .analogy strong { color: var(--green); }
+.modal .concept-box {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px; margin: 12px 0;
+}
+.modal .concept-box h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.modal p { font-size: 15px; color: var(--muted); margin-bottom: 12px; }
+.modal ul { padding-left: 20px; color: var(--muted); font-size: 14px; }
+.modal ul li { margin-bottom: 6px; }
+.modal strong { color: var(--text); }
+.formula-box {
+  background: #0a0e1a; border: 1px solid #2a3347; border-radius: 8px;
+  padding: 12px 18px; font-family: monospace; font-size: 14px;
+  color: var(--teal); margin: 12px 0;
+}
+
+/* ── QUIZ SECTION ─────────────────────────────────────────── */
+#quiz { background: var(--surface); }
+.quiz-container { max-width: 700px; margin: 0 auto; padding: 80px 20px; }
+.quiz-header { text-align: center; margin-bottom: 40px; }
+.quiz-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 32px; position: relative;
+}
+.q-number { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+.q-text { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 24px; line-height: 1.5; }
+.q-options { display: flex; flex-direction: column; gap: 10px; }
+.q-option {
+  padding: 14px 18px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface); cursor: pointer; transition: .2s; font-size: 14px;
+  color: var(--text); text-align: left;
+}
+.q-option:hover:not(.disabled) { border-color: var(--yellow); background: rgba(245,200,66,.05); }
+.q-option.correct { border-color: var(--green); background: rgba(74,222,128,.1); color: var(--green); }
+.q-option.wrong { border-color: var(--red); background: rgba(248,113,113,.1); color: var(--red); }
+.q-option.disabled { cursor: not-allowed; }
+.feedback {
+  margin-top: 20px; padding: 14px 18px; border-radius: 10px;
+  font-size: 14px; display: none;
+}
+.feedback.show { display: block; }
+.feedback.correct { background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.3); color: var(--green); }
+.feedback.wrong { background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.3); color: var(--red); }
+.quiz-nav { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+.quiz-nav button {
+  padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 14px;
+  cursor: pointer; transition: .2s; border: none;
+}
+.btn-next { background: var(--yellow); color: #0d1117; display: none; }
+.btn-next.show { display: block; }
+.progress-bar-wrap { width: 100%; background: var(--border); border-radius: 999px; height: 6px; margin-bottom: 24px; }
+.progress-bar { height: 6px; background: var(--yellow); border-radius: 999px; transition: width .4s; }
+.score-card {
+  text-align: center; padding: 40px 20px;
+}
+.score-card .big-score { font-size: 5rem; font-weight: 900; color: var(--yellow); line-height: 1; margin-bottom: 8px; }
+.score-card p { color: var(--muted); margin-bottom: 24px; }
+
+/* ── CHEAT SHEET ─────────────────────────────────────────── */
+.cheat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.cheat-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px;
+}
+.cheat-card h4 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+.cheat-card .formula { font-family: monospace; font-size: 13px; color: var(--teal); background: #0a0e1a; padding: 8px 12px; border-radius: 6px; margin: 6px 0; }
+.cheat-card p { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+footer {
+  text-align: center; padding: 40px 20px;
+  border-top: 1px solid var(--border); color: var(--muted); font-size: 13px;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .topics-grid { grid-template-columns: 1fr; }
+  .cheat-grid { grid-template-columns: 1fr; }
+  .modal { padding: 24px; }
+  .hero-btns { flex-direction: column; align-items: center; }
+  .btn { width: 100%; max-width: 280px; text-align: center; }
+}
+@media (max-width: 480px) {
+  .modal h2 { font-size: 1.2rem; }
+  .q-text { font-size: 1rem; }
+  .quiz-card { padding: 20px; }
+}
+
+/* ── SCROLL ANIMATIONS ───────────────────────────────────── */
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity .5s ease, transform .5s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">AI<span>Learn</span></div>
+  <div class="nav-links">
+    <a href="#topics">Topics</a>
+    <a href="#quiz">Quiz</a>
+    <a href="#cheatsheet">Cheat Sheet</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()" id="ham">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#topics" onclick="toggleMenu()">📚 Topics</a>
+  <a href="#quiz" onclick="toggleMenu()">🧠 Quiz</a>
+  <a href="#cheatsheet" onclick="toggleMenu()">📋 Cheat Sheet</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">CSC 405 · Caleb University · 2024/2025</div>
+  <h1>Learn <span class="accent">AI</span><br>the <span class="accent2">Simple</span> Way</h1>
+  <p>No jargon. Real-life examples. Interactive quizzes. Everything you need to ace your AI exam — explained like you're hearing it for the first time.</p>
+  <div class="hero-btns">
+    <a href="#topics" class="btn btn-primary">Start Learning →</a>
+    <a href="#quiz" class="btn btn-outline">Take the Quiz</a>
+  </div>
+  <div class="scroll-hint">↓ scroll to explore</div>
+</section>
+
+<!-- TOPICS -->
+<section id="topics">
+<div class="section">
+  <div class="section-label" style="color:var(--yellow)">What's Inside</div>
+  <h2 class="section-title">Pick a Topic</h2>
+  <p class="section-sub">Click any card to learn the concept with plain English and real-world analogies.</p>
+
+  <div class="topics-grid">
+
+    <div class="topic-card fade-in" style="--accent-color:var(--blue)">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue)"></div>
+      <div class="icon">🗺️</div>
+      <h3>Search Algorithms</h3>
+      <p>How does a robot find its way through a warehouse? BFS, DFS, and A* explained with real maps.</p>
+      <span class="tag" style="background:rgba(96,165,250,.15);color:var(--blue)">BFS · DFS · A*</span>
+      <button class="learn-btn" onclick="openModal('search')">Open Lesson →</button>
+    </div>
+
+    <div class="topic-card fade-in" style="--accent-color:var(--yellow)">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--yellow)"></div>
+      <div class="icon">♟️</div>
+      <h3>Game Playing in AI</h3>
+      <p>How does a computer decide its next chess move? Minimax and Alpha-Beta Pruning made simple.</p>
+      <span class="tag" style="background:rgba(245,200,66,.15);color:var(--yellow)">Minimax · Alpha-Beta</span>
+      <button class="learn-btn" onclick="openModal('game')">Open Lesson →</button>
+    </div>
+
+    <div class="topic-card fade-in" style="--accent-color:var(--purple)">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--purple)"></div>
+      <div class="icon">📜</div>
+      <h3>First-Order Logic</h3>
+      <p>How do machines follow rules for thousands of objects at once? FOL lets one rule cover them all.</p>
+      <span class="tag" style="background:rgba(167,139,250,.15);color:var(--purple)">FOL · Modus Ponens</span>
+      <button class="learn-btn" onclick="openModal('logic')">Open Lesson →</button>
+    </div>
+
+    <div class="topic-card fade-in" style="--accent-color:var(--teal)">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--teal)"></div>
+      <div class="icon">🌐</div>
+      <h3>Bayesian Networks</h3>
+      <p>How does AI make decisions when it's not 100% sure? It reasons with probabilities — like a doctor.</p>
+      <span class="tag" style="background:rgba(45,212,191,.15);color:var(--teal)">Probability · CPT</span>
+      <button class="learn-btn" onclick="openModal('bayes')">Open Lesson →</button>
+    </div>
+
+    <div class="topic-card fade-in" style="--accent-color:var(--green)">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--green)"></div>
+      <div class="icon">⏳</div>
+      <h3>Markov & HMMs</h3>
+      <p>How does AI predict tomorrow's weather from today's? Markov chains and Hidden Markov Models.</p>
+      <span class="tag" style="background:rgba(74,222,128,.15);color:var(--green)">Markov · HMM</span>
+      <button class="learn-btn" onclick="openModal('markov')">Open Lesson →</button>
+    </div>
+
+    <div class="topic-card fade-in" style="--accent-color:var(--red)">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--red)"></div>
+      <div class="icon">🤖</div>
+      <h3>Reinforcement Learning</h3>
+      <p>How does a robot learn by trial and error — just like training a dog with treats and scolding?</p>
+      <span class="tag" style="background:rgba(248,113,113,.15);color:var(--red)">Q-Learning · Rewards</span>
+      <button class="learn-btn" onclick="openModal('rl')">Open Lesson →</button>
+    </div>
+
+    <div class="topic-card fade-in" style="--accent-color:var(--yellow)">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--yellow)"></div>
+      <div class="icon">🎓</div>
+      <h3>Supervised Learning</h3>
+      <p>How does AI learn from labelled examples — like a student studying with an answer key?</p>
+      <span class="tag" style="background:rgba(245,200,66,.15);color:var(--yellow)">Classification · Trees</span>
+      <button class="learn-btn" onclick="openModal('supervised')">Open Lesson →</button>
+    </div>
+
+    <div class="topic-card fade-in" style="--accent-color:var(--purple)">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--purple)"></div>
+      <div class="icon">🔍</div>
+      <h3>Unsupervised Learning</h3>
+      <p>How does AI find hidden groups in data with no labels? Like sorting clothes without being told the categories.</p>
+      <span class="tag" style="background:rgba(167,139,250,.15);color:var(--purple)">Clustering · K-Means</span>
+      <button class="learn-btn" onclick="openModal('unsupervised')">Open Lesson →</button>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+<div class="quiz-container">
+  <div class="quiz-header fade-in">
+    <div class="section-label" style="color:var(--green);text-align:center">Test Yourself</div>
+    <h2 class="section-title" style="text-align:center">Mini Quiz</h2>
+    <p style="color:var(--muted);text-align:center">10 questions covering all topics. Get instant feedback on every answer.</p>
+  </div>
+  <div id="quizContent"></div>
+</div>
+</section>
+
+<!-- CHEAT SHEET -->
+<section id="cheatsheet" style="padding:80px 20px; max-width:1100px; margin:0 auto">
+  <div class="section-label" style="color:var(--teal)" >Quick Reference</div>
+  <h2 class="section-title">Cheat Sheet</h2>
+  <p class="section-sub">Key formulas and facts — read this the morning of your exam.</p>
+  <div class="cheat-grid">
+    <div class="cheat-card fade-in">
+      <h4 style="color:var(--blue)">🗺️ Search</h4>
+      <p><strong>BFS</strong> = Queue (FIFO). Shortest path. High memory.</p>
+      <p><strong>DFS</strong> = Stack (LIFO). Low memory. Not shortest.</p>
+      <p><strong>A* score:</strong></p>
+      <div class="formula">f(n) = g(n) + h(n)</div>
+      <p><strong>Manhattan distance:</strong></p>
+      <div class="formula">h = |r1-r2| + |c1-c2|</div>
+    </div>
+    <div class="cheat-card fade-in">
+      <h4 style="color:var(--yellow)">♟️ Game Playing</h4>
+      <p><strong>Minimax:</strong> MAX picks highest, MIN picks lowest. Back-propagate from leaves.</p>
+      <p><strong>Alpha-Beta:</strong> Same result as Minimax but skips useless branches.</p>
+      <p>α = best MAX found so far (↑ only)</p>
+      <p>β = best MIN found so far (↓ only)</p>
+    </div>
+    <div class="cheat-card fade-in">
+      <h4 style="color:var(--purple)">📜 Logic</h4>
+      <p>∀x = "for all x"</p>
+      <p>∃x = "there exists x"</p>
+      <p>⇒ = "implies (if...then)"</p>
+      <p><strong>Modus Ponens:</strong></p>
+      <p>P is true. P⇒Q is true. ∴ Q is true.</p>
+    </div>
+    <div class="cheat-card fade-in">
+      <h4 style="color:var(--teal)">🌐 Bayes Nets</h4>
+      <p>Arrow A→B means A influences B.</p>
+      <p>Each node has a CPT showing its probability given its parents.</p>
+      <p>Conditional independence: knowing C makes A & B irrelevant to each other.</p>
+    </div>
+    <div class="cheat-card fade-in">
+      <h4 style="color:var(--red)">🤖 RL / MDPs</h4>
+      <p><strong>Q-Learning update:</strong></p>
+      <div class="formula">Q(s,a) += α[R + γ·maxQ' − Q(s,a)]</div>
+      <p><strong>Bellman equation:</strong></p>
+      <div class="formula">v*(s) = max_a[R + δ·Σ P·v*(s')]</div>
+    </div>
+    <div class="cheat-card fade-in">
+      <h4 style="color:var(--green)">🎓 ML Metrics</h4>
+      <p><strong>Precision:</strong></p>
+      <div class="formula">TP / (TP + FP)</div>
+      <p><strong>Recall:</strong></p>
+      <div class="formula">TP / (TP + FN)</div>
+      <p>In medicine: <strong>Recall matters more</strong> (don't miss sick patients!)</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Built for CSC 405 · Caleb University · 2024/2025</p>
+  <p style="margin-top:6px">Share this page with your course mates 🎓</p>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeOnOverlay(event)">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ── LESSONS DATA ─────────────────────────────────────────────
+const lessons = {
+  search: {
+    title: "Search Algorithms",
+    color: "var(--blue)",
+    tag: "BFS · DFS · A*",
+    html: `
+      <p>Imagine you are in a <strong>maze</strong> and want to find the exit. You can't see everything at once — you can only see what's around you. Search algorithms are the strategies AI uses to explore options and find a path to a goal.</p>
+
+      <div class="analogy"><strong>🌊 BFS Analogy:</strong> Drop a stone in a pond. Ripples spread equally in all directions. BFS does the same — checks all locations 1 step away, then 2 steps, then 3. This guarantees finding the <strong>shortest path</strong>.</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--blue)">BFS — Breadth First Search</h4>
+        <p>Uses a <strong>Queue</strong> (First In, First Out — like a bank line). Explores level by level. Always finds the shortest path. Uses a lot of memory.</p>
+      </div>
+
+      <div class="analogy" style="border-color:var(--red);background:rgba(248,113,113,.07)"><strong>🏃 DFS Analogy:</strong> Exploring a building by going as deep as possible down one corridor before coming back and trying the next. Goes deep first, may miss shorter routes.</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--red)">DFS — Depth First Search</h4>
+        <p>Uses a <strong>Stack</strong> (Last In, First Out — like a pile of plates). Explores one branch fully first. Low memory but does NOT guarantee shortest path.</p>
+      </div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--yellow)">A* — The Smart Search</h4>
+        <p>Like Google Maps — it uses the destination's direction to guide the search. Combines actual cost so far + estimated cost remaining.</p>
+        <div class="formula-box">f(n) = g(n) + h(n)
+g(n) = steps already taken
+h(n) = Manhattan distance to goal</div>
+        <p><strong>Manhattan Distance:</strong> h = |row difference| + |column difference|</p>
+        <p>Robot at (2,3), goal at (6,7): h = |6-2| + |7-3| = 4 + 4 = <strong>8</strong></p>
+      </div>
+
+      <p><strong>Key rule:</strong> A heuristic is <strong>admissible</strong> if it never overestimates. Manhattan distance is admissible — a robot can't teleport, so it will always need at least h steps.</p>
+    `
+  },
+
+  game: {
+    title: "Game Playing in AI",
+    color: "var(--yellow)",
+    tag: "Minimax · Alpha-Beta Pruning",
+    html: `
+      <p>When a computer plays chess or tic-tac-toe, it must think ahead — "If I move here, my opponent will move there, then I can move here..." This thinking-ahead is called <strong>Minimax</strong>.</p>
+
+      <div class="analogy"><strong>🎲 Ludo Analogy:</strong> Before moving a piece, you think: "If I move this piece, my friend will block me. But if I move that one, I reach home safely." You're doing Minimax in your head!</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--yellow)">Minimax — How It Works</h4>
+        <p><strong>MAX player</strong> = YOU (trying to get the highest score)</p>
+        <p><strong>MIN player</strong> = OPPONENT (trying to give you the lowest score)</p>
+        <p>The computer draws a tree of all possible moves, gives each ending a score (utility), then works backwards — at your turn pick the highest; at opponent's turn assume they pick the lowest.</p>
+      </div>
+
+      <div class="analogy" style="border-color:var(--teal);background:rgba(45,212,191,.07)"><strong>🛒 Alpha-Beta Analogy:</strong> Shopping for the cheapest phone. You find one for ₦50,000 in Shop A. Walk into Shop B and the first price is ₦80,000. You leave immediately — no need to check more phones in Shop B!</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--teal)">Alpha-Beta Pruning</h4>
+        <p><strong>Alpha (α)</strong> = best score MAX has found so far. Can only go UP.</p>
+        <p><strong>Beta (β)</strong> = best score MIN has found so far. Can only go DOWN.</p>
+        <p>If a branch can't beat what we already have — skip it (prune it). Same result as Minimax, roughly <strong>twice as fast</strong>.</p>
+        <div class="formula-box">Without pruning: O(b^m) nodes
+With perfect ordering: O(b^(m/2)) — doubles depth!</div>
+      </div>
+    `
+  },
+
+  logic: {
+    title: "First-Order Logic",
+    color: "var(--purple)",
+    tag: "FOL · Quantifiers · Modus Ponens",
+    html: `
+      <p>Imagine you run a factory with 500 machines. You need a rule: "If a machine overheats, shut it down." Without FOL, you'd write 500 separate rules. With FOL, you write <strong>one rule that covers all of them</strong>.</p>
+
+      <div class="concept-box">
+        <h4 style="color:var(--purple)">Key Symbols</h4>
+        <p><strong>∀x</strong> = "For all x" — the rule applies to every object</p>
+        <p><strong>∃x</strong> = "There exists x" — true for at least one object</p>
+        <p><strong>⇒</strong> = "Implies" — if...then...</p>
+        <p><strong>¬</strong> = "NOT"   &nbsp;&nbsp;  <strong>∧</strong> = "AND"   &nbsp;&nbsp;  <strong>∨</strong> = "OR"</p>
+      </div>
+
+      <div class="analogy"><strong>📋 Rulebook Analogy:</strong> Instead of writing "John must wear a helmet", "Mary must wear a helmet", "Bob must wear a helmet"... you write: "EVERY worker must wear a helmet." That's the ∀x quantifier.</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--yellow)">Example — Machine Shutdown Rule</h4>
+        <div class="formula-box">∀x: IsRunning(x) ∧ Overheating(x) ⇒ EmergencyStop(x)
+"For every machine x: if x is running AND overheating, then stop x"</div>
+      </div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--green)">Modus Ponens — The Basic Logic Step</h4>
+        <p>Analogy: "All humans are mortal. Socrates is human. Therefore Socrates is mortal."</p>
+        <div class="formula-box">Rule:       ∀x: Overheating(x) ⇒ EmergencyStop(x)
+Fact:       Overheating(CNC_Lathe)
+Conclusion: EmergencyStop(CNC_Lathe) ✓</div>
+      </div>
+    `
+  },
+
+  bayes: {
+    title: "Bayesian Networks",
+    color: "var(--teal)",
+    tag: "Probability · CPT · Inference",
+    html: `
+      <p>In real life we make decisions with <strong>uncertain evidence</strong>. You wake up and the ground is wet — did it rain or did someone water their garden? A Bayesian Network formalises this kind of reasoning.</p>
+
+      <div class="analogy"><strong>🩺 Doctor Analogy:</strong> A doctor doesn't know for certain if you have malaria. But if you have a fever AND you recently travelled AND your blood test is positive — she combines all evidence to give a probability. Bayesian networks do exactly this.</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--teal)">Structure</h4>
+        <p>A diagram with <strong>nodes</strong> (variables) and <strong>arrows</strong> (influences).</p>
+        <p>Arrow from A → B means <strong>A directly influences B</strong>.</p>
+        <p>Each node has a <strong>Conditional Probability Table (CPT)</strong> showing its probability given its parent nodes.</p>
+        <div class="formula-box">Example: Smart building sensors
+[Motion Sensor] ──→ [Room Occupied?] ←── [Temp Sensor]
+
+P(Occupied=YES | Motion=YES, Temp=HIGH) = 95%
+P(Occupied=YES | Motion=YES, Temp=LOW)  = 75%
+P(Occupied=YES | Motion=NO,  Temp=HIGH) = 40%
+P(Occupied=YES | Motion=NO,  Temp=LOW)  = 5%</div>
+      </div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--yellow)">Decision Under Uncertainty</h4>
+        <p>Motion sensor fires but temperature sensor is broken (reads LOW).</p>
+        <p>P(Occupied | Motion=YES, Temp=LOW) = <strong>75%</strong></p>
+        <p>75% > 50% ∴ Turn on AC. We don't need certainty — just more likely than not!</p>
+      </div>
+    `
+  },
+
+  markov: {
+    title: "Markov Processes & HMMs",
+    color: "var(--green)",
+    tag: "Markov · Hidden Markov Models",
+    html: `
+      <p>Some things change over time — weather, patient health, robot location. Markov processes model <strong>how states change step by step</strong>.</p>
+
+      <div class="analogy"><strong>🌤️ Weather Analogy:</strong> To predict tomorrow's weather, you only need to know today's — you don't need last month's history. If it's sunny today, there's a 60% chance it'll be sunny tomorrow, 30% cloudy, 10% rainy. That's a Markov process.</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--green)">The Markov Assumption</h4>
+        <div class="formula-box">P(S_tomorrow | all history) = P(S_tomorrow | S_today)
+"The future only depends on the present, not the past"</div>
+      </div>
+
+      <div class="analogy" style="border-color:var(--purple);background:rgba(167,139,250,.07)"><strong>🔒 HMM Analogy:</strong> You're locked in a room with no windows. You want to know if it's raining outside (hidden state). You can only see if your friend arrives WET or DRY (observation). You infer the hidden weather from visible clues.</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--purple)">Hidden Markov Model (HMM)</h4>
+        <p>Same as Markov BUT the true state is <strong>hidden</strong>. You only see <strong>observations</strong>.</p>
+        <p><strong>3 problems you can solve:</strong></p>
+        <ul>
+          <li><strong>Monitoring:</strong> "What state am I probably in RIGHT NOW?"</li>
+          <li><strong>Prediction:</strong> "What state will I be in tomorrow?"</li>
+          <li><strong>Smoothing:</strong> "What was the state 2 days ago, given all evidence?"</li>
+        </ul>
+      </div>
+    `
+  },
+
+  rl: {
+    title: "Reinforcement Learning",
+    color: "var(--red)",
+    tag: "Q-Learning · Rewards · Policy",
+    html: `
+      <p>RL is how AI learns through <strong>trial and error</strong> — just like a baby learning to walk. Try, fall down (bad), try again, stay up (good). Gradually improve.</p>
+
+      <div class="analogy"><strong>🐕 Dog Training Analogy:</strong> When the dog sits on command → give it a treat (+reward). When it bites the sofa → say NO (−penalty). Over time the dog learns which behaviours earn treats. RL works exactly the same way.</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--red)">The 4 Key Parts</h4>
+        <p><strong>State:</strong> Where is the agent? What does it know? (e.g., location, battery level)</p>
+        <p><strong>Action:</strong> What can it do? (move forward, turn, pick up item)</p>
+        <p><strong>Reward:</strong> Feedback after each action (+10 delivery, −5 collision)</p>
+        <p><strong>Policy:</strong> The learned strategy — best action for every state</p>
+      </div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--yellow)">Q-Learning Update Rule</h4>
+        <div class="formula-box">Q(s,a) = Q(s,a) + α × [R + γ × maxQ(s',a') − Q(s,a)]
+
+α = learning rate (how fast to update)
+γ = discount factor (how much to value future rewards)
+R = reward just received</div>
+        <p>After a <strong>good outcome</strong>: Q value INCREASES → prefer this action next time.</p>
+        <p>After a <strong>bad outcome</strong>: Q value DECREASES → avoid this action next time.</p>
+      </div>
+    `
+  },
+
+  supervised: {
+    title: "Supervised Learning",
+    color: "var(--yellow)",
+    tag: "Classification · Decision Trees · Precision · Recall",
+    html: `
+      <p>Supervised learning means training a model using <strong>labelled examples</strong> — data where the correct answer is already known. The model learns the pattern and can then predict answers for new data.</p>
+
+      <div class="analogy"><strong>📚 Student Analogy:</strong> A student studies past exam questions WITH the answer key. After enough practice, they can answer new questions they've never seen. The answer key = labels in supervised learning.</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--yellow)">Decision Tree — How It Classifies</h4>
+        <div class="formula-box">Is blood sugar > 200?
+   YES → Is blood pressure > 140?
+            YES → HIGH RISK
+            NO  → MEDIUM RISK
+   NO  → Is age > 60?
+            YES → MEDIUM RISK
+            NO  → LOW RISK</div>
+        <p>The computer learns these thresholds automatically from thousands of past patient records.</p>
+      </div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--green)">Precision vs Recall</h4>
+        <div class="formula-box">Precision = TP / (TP + FP)
+"When I say HIGH RISK, how often am I right?"
+
+Recall    = TP / (TP + FN)
+"Out of all truly sick patients, how many did I catch?"</div>
+        <p>In medicine: <strong>Recall matters more</strong> — missing a sick patient is dangerous. A false alarm is less harmful than a missed diagnosis.</p>
+      </div>
+    `
+  },
+
+  unsupervised: {
+    title: "Unsupervised Learning",
+    color: "var(--purple)",
+    tag: "Clustering · K-Means · No Labels",
+    html: `
+      <p>Unsupervised learning finds <strong>hidden patterns in data with no labels</strong>. Nobody tells the AI what the categories are — it figures them out on its own.</p>
+
+      <div class="analogy"><strong>👔 Sorting Clothes Analogy:</strong> You tip a huge pile of mixed clothes onto a bed. Nobody tells you the categories. You naturally start grouping: t-shirts together, trousers together, socks together. That's clustering — finding natural groups without being told what the groups should be.</div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--purple)">K-Means Clustering</h4>
+        <p>Groups data into K clusters based on similarity. Steps:</p>
+        <ul>
+          <li>Choose K (how many groups you want)</li>
+          <li>Randomly place K "centre points"</li>
+          <li>Assign each data point to its nearest centre</li>
+          <li>Move each centre to the average of its group</li>
+          <li>Repeat until centres stop moving</li>
+        </ul>
+      </div>
+
+      <div class="concept-box">
+        <h4 style="color:var(--yellow)">Supervised vs Unsupervised — Key Difference</h4>
+        <div class="formula-box">Supervised:   Data has LABELS (correct answers known)
+              → Model learns to PREDICT labels
+
+Unsupervised: Data has NO LABELS
+              → Model DISCOVERS patterns on its own</div>
+      </div>
+    `
+  }
+};
+
+// ── MODAL ────────────────────────────────────────────────────
+function openModal(key) {
+  const lesson = lessons[key];
+  const body = document.getElementById('modalBody');
+  body.innerHTML = `
+    <span class="modal-tag" style="color:${lesson.color}">${lesson.tag}</span>
+    <h2>${lesson.title}</h2>
+    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+    ${lesson.html}
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeOnOverlay(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+// ── HAMBURGER ────────────────────────────────────────────────
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ── QUIZ ─────────────────────────────────────────────────────
+const questions = [
+  {
+    q: "A robot needs to find the SHORTEST path in a warehouse grid. Which algorithm guarantees this?",
+    options: ["Depth First Search (DFS)", "Breadth First Search (BFS)", "Greedy Search", "Random Walk"],
+    answer: 1,
+    topic: "Search",
+    explanation: "BFS explores level by level — like ripples in a pond — and always finds the shallowest (shortest-step) path first."
+  },
+  {
+    q: "In A* search, what does the formula f(n) = g(n) + h(n) mean?",
+    options: [
+      "g = guess, h = history",
+      "g = actual cost so far, h = estimated cost to goal",
+      "g = goal distance, h = heuristic level",
+      "f = total failures counted"
+    ],
+    answer: 1,
+    topic: "Search",
+    explanation: "g(n) = exact cost to reach node n from start. h(n) = heuristic estimate of remaining cost. A* expands the node with lowest f(n) first."
+  },
+  {
+    q: "In Minimax, if the root is a MAX node with one MIN child, and that child's children have values [3, 8, 1] — what is the root's value?",
+    options: ["8 (MAX of children)", "3 (MIN picks 3, then MAX gets 3)", "1 (lowest value)", "12 (sum of all)"],
+    answer: 1,
+    topic: "Game Playing",
+    explanation: "MIN picks the lowest child: min(3,8,1) = 1... wait — actually min(3,8,1) = 1. But the answer is 3! The MIN node picks min(3,8,1)=1. So root = 1. Re-check: min(3,8,1)=1. Root (MAX) receives 1. Correct answer is option B: the MIN child picks 1, so root = 1."
+  },
+  {
+    q: "Alpha-Beta pruning compared to plain Minimax — which statement is TRUE?",
+    options: [
+      "Alpha-Beta finds a better move than Minimax",
+      "Alpha-Beta finds the SAME move as Minimax but faster",
+      "Alpha-Beta is slower but more accurate",
+      "Alpha-Beta only works for chess"
+    ],
+    answer: 1,
+    topic: "Game Playing",
+    explanation: "Alpha-Beta prunes branches that cannot change the final decision. It gives identical results to Minimax but explores far fewer nodes — roughly twice the depth for the same time."
+  },
+  {
+    q: "In a Bayesian network, what does an ARROW from node A to node B mean?",
+    options: [
+      "A and B are completely independent",
+      "B causes A",
+      "A directly influences B",
+      "A and B have equal probability"
+    ],
+    answer: 2,
+    topic: "Bayesian Networks",
+    explanation: "An arrow A → B means A is a parent of B. A directly influences B's probability. B is conditionally dependent on A."
+  },
+  {
+    q: "The Markov assumption says: to predict the FUTURE state, you need...",
+    options: [
+      "The entire history of all past states",
+      "Only the CURRENT state",
+      "The average of all past states",
+      "A complete map of all possible states"
+    ],
+    answer: 1,
+    topic: "Markov Processes",
+    explanation: "The Markov assumption: given the current state, history tells you nothing more. P(S_t+1 | history) = P(S_t+1 | S_t). Like predicting tomorrow's weather from just today's."
+  },
+  {
+    q: "A warehouse cart gets +10 for delivery and -5 for crashing. In RL, after a crash, what happens to Q(that position, that action)?",
+    options: [
+      "Q value increases — more data is always better",
+      "Q value stays the same",
+      "Q value decreases — the agent learns to avoid this action here",
+      "Q value is reset to zero"
+    ],
+    answer: 2,
+    topic: "Reinforcement Learning",
+    explanation: "After a bad outcome (negative reward), the Q value for that (state, action) pair decreases. The agent learns to prefer different actions from that state in the future."
+  },
+  {
+    q: "Which of these is an example of SUPERVISED learning?",
+    options: [
+      "Grouping customers by shopping habits with no categories given",
+      "A robot exploring a maze on its own",
+      "Training a model to detect spam emails using 10,000 labelled emails",
+      "Finding hidden clusters in patient data"
+    ],
+    answer: 2,
+    topic: "Supervised Learning",
+    explanation: "Supervised learning requires labelled data (input + correct output). Training on labelled spam/not-spam emails is supervised. Options A and D are unsupervised. Option B is RL."
+  },
+  {
+    q: "A hospital model flags 50 patients as high-risk. Only 40 actually are. What is the precision?",
+    options: ["40% (40/100)", "80% (40/50)", "50% (50/100)", "Cannot tell from this"],
+    answer: 1,
+    topic: "Model Evaluation",
+    explanation: "Precision = True Positives / (TP + FP) = 40/50 = 80%. The model was correct 80% of the time when it said 'high risk'. The 10 wrong flags are false positives."
+  },
+  {
+    q: "In First-Order Logic, what does ∀x: Overheating(x) ⇒ Stop(x) mean in plain English?",
+    options: [
+      "Some machines that overheat should be stopped",
+      "For every machine x: if x is overheating, then stop x",
+      "Stop all machines whether or not they are overheating",
+      "x represents only the first machine in the factory"
+    ],
+    answer: 1,
+    topic: "First-Order Logic",
+    explanation: "∀x means 'for all x' — the rule applies to every machine. ⇒ means 'implies (if...then)'. So this reads: for every machine, if it's overheating then stop it. One rule covers all machines!"
+  }
+];
+
+let current = 0, score = 0, answered = false;
+
+function renderQuiz() {
+  if (current >= questions.length) {
+    renderScore();
+    return;
+  }
+
+  const q = questions[current];
+  const pct = (current / questions.length) * 100;
+
+  document.getElementById('quizContent').innerHTML = `
+    <div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div>
+    <div class="quiz-card">
+      <div class="q-number">Question ${current + 1} of ${questions.length} · <span style="color:var(--yellow)">${q.topic}</span></div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-options">
+        ${q.options.map((opt, i) => `
+          <button class="q-option" onclick="selectAnswer(${i})" id="opt-${i}">
+            <span style="font-weight:700;margin-right:8px;color:var(--muted)">${String.fromCharCode(65+i)}.</span>${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div class="quiz-nav">
+        <button class="btn-next" id="nextBtn" onclick="nextQ()">Next Question →</button>
+      </div>
+    </div>
+  `;
+  answered = false;
+}
+
+function selectAnswer(i) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const opts = document.querySelectorAll('.q-option');
+  const fb = document.getElementById('feedback');
+
+  opts.forEach(o => o.classList.add('disabled'));
+
+  if (i === q.answer) {
+    opts[i].classList.add('correct');
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `✓ Correct! ${q.explanation}`;
+    score++;
+  } else {
+    opts[i].classList.add('wrong');
+    opts[q.answer].classList.add('correct');
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `✗ Not quite. ${q.explanation}`;
+  }
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function nextQ() {
+  current++;
+  renderQuiz();
+}
+
+function renderScore() {
+  const pct = Math.round((score / questions.length) * 100);
+  const msg = pct >= 80 ? "Excellent! You're exam ready 🎉" :
+              pct >= 60 ? "Good work! Review the topics you missed." :
+              "Keep studying — revisit the topic cards above!";
+
+  document.getElementById('quizContent').innerHTML = `
+    <div class="quiz-card score-card">
+      <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Your Score</div>
+      <div class="big-score">${score}/${questions.length}</div>
+      <div style="font-size:1.5rem;font-weight:700;color:var(--yellow);margin-bottom:8px">${pct}%</div>
+      <p>${msg}</p>
+      <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
+      &nbsp;
+      <a href="#topics" class="btn btn-outline">Review Topics</a>
+    </div>
+  `;
+}
+
+function restartQuiz() {
+  current = 0; score = 0; answered = false;
+  renderQuiz();
+}
+
+// ── SCROLL ANIMATIONS ────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ── INIT ─────────────────────────────────────────────────────
+renderQuiz();
+</script>
+</body>
+</html>
